@@ -7,9 +7,12 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy and restore project dependencies
-COPY . .
+# Copy csproj and restore dependencies separately for better caching
+COPY *.csproj ./
 RUN dotnet restore
+
+# Copy all source code
+COPY . ./
 
 # Build and publish the project
 RUN dotnet publish -c Release -o /app/publish
