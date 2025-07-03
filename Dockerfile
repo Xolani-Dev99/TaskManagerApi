@@ -2,14 +2,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
 WORKDIR /app
 
-# Copy only project files and restore
+# Copy solution and project files
 COPY *.sln ./
-COPY TaskManagerApi/*.csproj ./TaskManagerApi/
-RUN dotnet restore TaskManagerApi/TaskManagerApi.csproj
+COPY *.csproj ./
+RUN dotnet restore
 
 # Copy everything else and publish
-COPY . .
-WORKDIR /app/TaskManagerApi
+COPY . ./
 RUN dotnet publish -c Release -o /app/out
 
 # Stage 2: Runtime
