@@ -1,26 +1,28 @@
-# Use official .NET runtime image
+# Base image for runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-# Use .NET SDK image to build the app
+# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore dependencies separately for better caching
-COPY *.csproj ./
-RUN dotnet restore
+# Copy solution and project files
+COPY TaskManagerApi.sln ./
+COPY TaskManagerApi/TaskManagerApi.csproj TaskManagerApi/
 
-# Copy all source code
-COPY . ./
+# Restore dependencies (cached if no .csproj changes)
+RUN dotnet restore TaskManagerApi.sln
 
-# Build and publish the project
-RUN dotnet publish -c Release -o /app/publish
+# Copy the rest of the source code
+COPY . .
 
-# Final image
+# Publish the application
+RUN dotnet publish TaskManagerApi.sln -c Release -o /app/publish
+
+# Final stage
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Run the app
 ENTRYPOINT ["dotnet", "TaskManagerApi.dll"]

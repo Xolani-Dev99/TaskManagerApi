@@ -1,26 +1,20 @@
-name: Build & Test .NET API with Docker
+# Stage 1: Restore and build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /app
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+# Copy only project files and restore
+COPY *.sln .
+COPY TaskManagerAPI/*.csproj ./TaskManagerAPI/
+RUN dotnet restore TaskManagerAPI/TaskManagerAPI.csproj
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# Copy everything else and publish
+COPY . .
+WORKDIR /app/TaskManagerAPI
+RUN dotnet publish -c Release -o /app/out
 
-    steps:
-    - name: 📥 Checkout code
-      uses: actions/checkout@v3
+# Stage 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/out .
 
-    - name: 🐳 Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: 🔨 Build Docker image
-      run: |
-        docker build -t taskmanager-api .
-
-    - name: ✅ Run Unit Tests
-      run: |
-        dotnet test
+ENTRYPOINT ["dotnet", "TaskManagerAPI.dll"]
