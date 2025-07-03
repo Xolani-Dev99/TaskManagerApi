@@ -1,0 +1,9 @@
+C:\Users\Xman\TaskManagerApi\obj\Release\net9.0\TaskManagerApi.csproj.AssemblyReference.cache
+C:\Users\Xman\TaskManagerApi\obj\Release\net9.0\rpswa.dswa.cache.json
+C:\Users\Xman\TaskManagerApi\obj\Release\net9.0\TaskManagerApi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Xman\TaskManagerApi\obj\Release\net9.0\TaskManagerApi.AssemblyInfoInputs.cache
+C:\Users\Xman\TaskManagerApi\obj\Release\net9.0\TaskManagerApi.AssemblyInfo.cs
+C:\Users\Xman\TaskManagerApi\obj\Release\net9.0\TaskManagerApi.csproj.CoreCompileInputs.cache
+C:\Users\Xman\TaskManagerApi\obj\Release\net9.0\TaskManagerApi.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Xman\TaskManagerApi\obj\Release\net9.0\TaskManagerApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Xman\TaskManagerApi\obj\Release\net9.0\TaskManagerApi.sourcelink.json
