@@ -1,28 +1,20 @@
-# Base image for runtime
-FROM mcr.microsoft.com/dotnet/aspnet:9.0.3-preview AS base
+# Stage 1: Restore and build
+FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
 WORKDIR /app
-EXPOSE 80
 
-# Build stage
-FROM mcr.microsoft.com/dotnet/sdk:9.0.3-preview AS build
-WORKDIR /src
+# Copy only project files and restore
+COPY *.sln ./
+COPY TaskManagerApi/*.csproj ./TaskManagerApi/
+RUN dotnet restore TaskManagerApi/TaskManagerApi.csproj
 
-# Copy solution and project files
-COPY TaskManagerApi.sln ./
-COPY TaskManagerApi/TaskManagerApi.csproj TaskManagerApi/
-
-# Restore dependencies (cached if no .csproj changes)
-RUN dotnet restore TaskManagerApi.sln
-
-# Copy the rest of the source code
+# Copy everything else and publish
 COPY . .
+WORKDIR /app/TaskManagerApi
+RUN dotnet publish -c Release -o /app/out
 
-# Publish the application
-RUN dotnet publish TaskManagerApi.sln -c Release -o /app/publish
-
-# Final stage
-FROM base AS final
+# Stage 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-preview AS runtime
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=build /app/out .
 
 ENTRYPOINT ["dotnet", "TaskManagerApi.dll"]
