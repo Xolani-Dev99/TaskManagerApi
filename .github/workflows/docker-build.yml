@@ -17,7 +17,7 @@ jobs:
     - name: 🧰 Set up .NET 9 SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.100-preview.3'  # Change this if you're using a different version
+        dotnet-version: '9.0.301-preview.3'  # Change this if you're using a different version
 
     - name: 🔍 Restore dependencies
       run: dotnet restore
