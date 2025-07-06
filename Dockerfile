@@ -1,20 +1,18 @@
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
 WORKDIR /app
 
-# Copy csproj and solution files
-COPY *.sln ./
-COPY TaskManagerApi.csproj ./
+# Copy and restore
+COPY *.csproj ./
+RUN dotnet restore
 
-RUN dotnet restore TaskManagerApi.csproj
-
-# Copy app source only (exclude tests)
+# Copy everything and publish
 COPY . ./
+RUN dotnet publish -c Release -o /app/publish
 
-RUN dotnet publish TaskManagerApi.csproj -c Release -o /app/out
-
+# Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-preview AS runtime
 WORKDIR /app
-
-COPY --from=build /app/out .
+COPY --from=build /app/publish .
 
 ENTRYPOINT ["dotnet", "TaskManagerApi.dll"]
